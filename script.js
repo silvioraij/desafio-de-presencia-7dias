@@ -16,21 +16,17 @@
   }
 
   function renderHome() {
-    app.innerHTML = `
-      <div class="screen home active">
-        <h1>Desafío de Presencia – 7 días</h1>
-        <p>Un juego de mindfulness para cultivar tu presencia.</p>
-        <div class="logo"><img src="public/logo-escuela-sati.png" alt="Escuela Sati"/></div>
-        <button id="start">Comenzar</button>
-      </div>
-    `;
-    document.getElementById('start').onclick = () => {
-      const idx = progress.findIndex(s => !s);
-      if(idx === -1) {
-        showDay(0);
-      } else {
-        showDay(idx);
-      }
+    let html = '<div class="screen home active">' +
+      '<h1>Desafío de Presencia – 7 días</h1>' +
+      '<p>Un juego de mindfulness para cultivar tu presencia.</p>' +
+      '<div class="logo"><img src="public/logo-escuela-sati.png" alt="Escuela Sati"/></div>' +
+      '<button id="start">Comenzar</button>' +
+      '</div>';
+    app.innerHTML = html;
+    document.getElementById('start').onclick = function() {
+      let idx = progress.findIndex(p => p !== true);
+      if (idx === -1) idx = 0;
+      showDay(idx);
     };
   }
 
@@ -38,30 +34,40 @@
     if (progress[i] === undefined) progress[i] = false;
     saveProgress();
     const day = days[i];
-    app.innerHTML = `
-      <div class="screen active">
-        <h2>${day.title}</h2>
-        <p>${day.text}</p>
-        <div class="timer"><span id="time">${Math.floor(day.duration/60)}:${String(day.duration%60).padStart(2,'0')}</span></div>
-        <div class="breath-circle"></div>
-        <button id="complete" disabled>Marcar completado</button>
-        <div class="progress">${days.map((_, idx) => `<div class="progress-circle ${progress[idx] ? 'completed' : idx===i ? 'current' : ''}"></div>`).join('')}</div>
-      </div>
-    `;
+    let progressHtml = '';
+    for (let idx = 0; idx < days.length; idx++) {
+      let cls = '';
+      if (progress[idx] === true) cls = 'completed';
+      else if (idx === i) cls = 'current';
+      progressHtml += '<div class="progress-circle ' + cls + '"></div>';
+    }
+    let minutes = Math.floor(day.duration / 60);
+    let seconds = day.duration % 60;
+    let html = '<div class="screen active">' +
+      '<h2>' + day.title + '</h2>' +
+      '<p>' + day.text + '</p>' +
+      '<div class="timer"><span id="time">' + minutes + ':' + String(seconds).padStart(2, '0') + '</span></div>' +
+      '<div class="breath-circle"></div>' +
+      '<button id="complete" disabled>Marcar completado</button>' +
+      '<div class="progress">' + progressHtml + '</div>' +
+      '</div>';
+    app.innerHTML = html;
     let remaining = day.duration;
     const timerEl = document.getElementById('time');
     const completeBtn = document.getElementById('complete');
-    const interval = setInterval(() => {
+    const interval = setInterval(function() {
       remaining--;
       if (remaining <= 0) {
         clearInterval(interval);
         timerEl.textContent = '0:00';
         completeBtn.disabled = false;
       } else {
-        timerEl.textContent = Math.floor(remaining/60) + ':' + String(remaining%60).padStart(2,'0');
+        let m = Math.floor(remaining / 60);
+        let s = remaining % 60;
+        timerEl.textContent = m + ':' + String(s).padStart(2, '0');
       }
     }, 1000);
-    completeBtn.onclick = () => {
+    completeBtn.onclick = function() {
       progress[i] = true;
       saveProgress();
       showReflection(i);
@@ -70,17 +76,16 @@
 
   function showReflection(i) {
     const day = days[i];
-    app.innerHTML = `
-      <div class="screen active">
-        <h2>Reflexión día ${i+1}</h2>
-        <p>${day.reflection}</p>
-        <blockquote>${day.phrase}</blockquote>
-        <button id="next">${i < days.length - 1 ? 'Siguiente día' : 'Finalizar'}</button>
-      </div>
-    `;
-    document.getElementById('next').onclick = () => {
+    let html = '<div class="screen active">' +
+      '<h2>Reflexión día ' + (i + 1) + '</h2>' +
+      '<p>' + day.reflection + '</p>' +
+      '<blockquote>' + day.phrase + '</blockquote>' +
+      '<button id="next">' + (i < days.length - 1 ? 'Siguiente día' : 'Finalizar') + '</button>' +
+      '</div>';
+    app.innerHTML = html;
+    document.getElementById('next').onclick = function() {
       if (i < days.length - 1) {
-        showDay(i+1);
+        showDay(i + 1);
       } else {
         showFinal();
       }
@@ -88,26 +93,26 @@
   }
 
   function showFinal() {
-    app.innerHTML = `
-      <div class="screen active">
-        <h2>¡Felicidades!</h2>
-        <p>Completaste el desafío de presencia.</p>
-        <button id="reset">Reiniciar desafío</button>
-      </div>
-    `;
-    document.getElementById('reset').onclick = () => {
+    let html = '<div class="screen active">' +
+      '<h2>¡Felicidades!</h2>' +
+      '<p>Completaste el desafío de presencia.</p>' +
+      '<button id="reset">Reiniciar desafío</button>' +
+      '</div>';
+    app.innerHTML = html;
+    document.getElementById('reset').onclick = function() {
       progress = [];
       saveProgress();
       renderHome();
     };
   }
 
-  // initial render: check progress and show current day or home
-  if (progress && progress.some(v => v === false)) {
-    const idx = progress.findIndex(v => v === false);
-    showDay(idx === -1 ? 0 : idx);
-  } else if (progress && progress.length === days.length && progress.every(v => v === true)) {
+  // initial
+  if (progress && progress.length === days.length && progress.every(p => p === true)) {
     showFinal();
+  } else if (progress && progress.some(p => p !== true)) {
+    let idx = progress.findIndex(p => p !== true);
+    if (idx === -1) idx = 0;
+    showDay(idx);
   } else {
     renderHome();
   }
