@@ -1,0 +1,86 @@
+(() => {
+   const app = document.getElementById('app');
+   const days = [
+      {title:'Día 1 – Respiración', text:'Pausa 3 min. Sentí inhalar/exhalar. ¿Cómo está tu energía hoy?', duration:180, reflection:'Respirá y observa tu energía.', phrase:'Respira y sé.'},
+      {title:'Día 2 – Cuerpo', text:'Escáner corporal rápido. ¿Dónde notás tensión?', duration:120, reflection:'Observá tu cuerpo y suelta tensión.', phrase:'Afloja.'},
+      {title:'Día 3 – Oídos', text:'1 min de escucha abierta. Nombrá 3 sonidos.', duration:60, reflection:'Reflexiona sobre los sonidos escuchados.', phrase:'Escucha.'},
+      {title:'Día 4 – Vista suave', text:'Aflojá el foco. Observá luces y sombras.', duration:120, reflection:'Observa tu visión suave.', phrase:'Mira con calma.'},
+      {title:'Día 5 – Agradecer', text:'Escribí 1 cosa que agradecés hoy.', duration:60, reflection:'Agradece lo que tienes.', phrase:'Gracias.'},
+      {title:'Día 6 – Soltar', text:'Notá un pensamiento repetido y soltarlo al exhalar.', duration:120, reflection:'Deja ir pensamientos repetitivos.', phrase:'Suelta.'},
+      {title:'Día 7 – Presencia en acción', text:'Hacé una tarea cotidiana con plena atención.', duration:120, reflection:'Practica presencia en acción.', phrase:'Presencia.'},
+      ];
+   let progress = JSON.parse(localStorage.getItem('desafio-progress') || '[]');
+   function saveProgress() { localStorage.setItem('desafio-progress', JSON.stringify(progress)); }
+   function renderHome() {
+      app.innerHTML = `
+       <div class="screen home active">
+        <h1>Desafío de Presencia – 7 días</h1>
+         <p>Un juego de mindfulness para cultivar tu presencia.</p>
+          <div class="logo"><img src="public/logo-escuela-sati.png" alt="Escuela Sati"/></div>
+           <button id="start">Comenzar</button>
+            </div>`;
+      document.getElementById('start').onclick = () => {
+         const idx = progress.findIndex(s => !s);
+         showDay(idx === -1 ? 0 : idx);
+         };
+      }
+   function showDay(i) {
+      if (progress[i] === undefined) progress[i] = false;
+      saveProgress();
+      const day = days[i];
+      app.innerHTML = `
+       <div class="screen active">
+        <h2>${day.title}</h2>
+         <p>${day.text}</p>
+          <div class="timer"><span id="time">${Math.floor(day.duration/60)}:${String(day.duration%60).padStart(2,'0')}</span></div>
+           <div class="breath-circle"></div>
+            <button id="complete" disabled>Marcar completado</button>
+             <div class="progress">${days.map((_, idx) => `<div class="progress-circle ${progress[idx] ? 'completed' : idx===i ? 'current' : ''}"></div>`).join('')}</div>
+              </div>`;
+      let remaining = day.duration;
+      const interval = setInterval(() => {
+         remaining--;
+         if (remaining <= 0) {
+            clearInterval(interval);
+            document.getElementById('complete').disabled = false;
+            document.getElementById('time').textContent = '0:00';
+            } else {
+            document.getElementById('time').textContent = Math.floor(remaining/60) + ':' + String(remaining%60).padStart(2,'0');
+            }
+         },1000);
+      document.getElementById('complete').onclick = () => {
+         progress[i] = true;
+         saveProgress();
+         showReflection(i);
+     function showReflection(i) {
+        const day = days[i];
+        app.innerHTML = `
+         <div class="screen active">
+          <h2>Reflexión día ${i+1}</h2>
+           <p>${day.reflection}</p>
+            <blockquote>${day.phrase}</blockquote>
+             <button id="next">${i < days.length -1 ? 'Siguiente día' : 'Finalizar'}</button>
+              </div>`;
+        document.getElementById('next').onclick = () => {
+           if (i < days.length -1) showDay(i+1); else showFinal();
+           };
+        }
+         function showFinal() {
+            app.innerHTML = `
+             <div class="screen active">
+              <h2>¡Felicidades!</h2>
+               <p>Completaste el desafío de presencia.</p>
+                <button id="reset">Reiniciar desafío</button>
+                 </div>`;
+            document.getElementById('reset').onclick = () => {
+               progress = [];
+               saveProgress();
+               renderHome();
+               };
+            }
+         renderHome();
+        )();
+        
+     };
+      }
+  
