@@ -1,13 +1,13 @@
 (() => {
   const app = document.getElementById('app');
   const days = [
-    {title:'Día 1 – Respiración', text:'Pausa 3 min. Sentí inhalar/exhalar. ¿Cómo está tu energía hoy?', duration:180, reflection:'Respirá y observa tu energía.', phrase:'Respira y sé.'},
-    {title:'Día 2 – Cuerpo', text:'Escáner corporal rápido. ¿Dónde notás tensión?', duration:120, reflection:'Observá tu cuerpo y suelta tensión.', phrase:'Afloja.'},
-    {title:'Día 3 – Oídos', text:'1 min de escucha abierta. Nombrá 3 sonidos.', duration:60, reflection:'Reflexiona sobre los sonidos escuchados.', phrase:'Escucha.'},
-    {title:'Día 4 – Vista suave', text:'Aflojá el foco. Observá luces y sombras.', duration:120, reflection:'Observa tu visión suave.', phrase:'Mira con calma.'},
-    {title:'Día 5 – Agradecer', text:'Escribí 1 cosa que agradecés hoy.', duration:60, reflection:'Agradece lo que tienes.', phrase:'Gracias.'},
-    {title:'Día 6 – Soltar', text:'Notá un pensamiento repetido y soltarlo al exhalar.', duration:120, reflection:'Deja ir pensamientos repetitivos.', phrase:'Suelta.'},
-    {title:'Día 7 – Presencia en acción', text:'Hacé una tarea cotidiana con plena atención.', duration:120, reflection:'Practica presencia en acción.', phrase:'Presencia.'},
+    {title:'Día 1 – Respira', text:'Pausa 3 min. inhala/exhala. ¿Cuán presente estás hoy?', duration:180, reflection:'Respira y observa tu energía.', phrase:'Respira y siente tu vida.'},
+    {title:'Día 2 – Cuerpo', text:'Lleva tu atención al cuerpo. Nota tus sensaciones', duration:120, reflection:'Observá tu cuerpo y suelta tensión.', phrase:'Afloja.'},
+    {title:'Día 3 – Oídos', text:'Practica escuchar los sonidos a tu alrededor. Identifica 3 sonidos.', duration:60, reflection:'Reflexiona sobre los sonidos escuchados.', phrase:'Escucha.'},
+    {title:'Día 4 – Vista suave', text:'Nota tus emociones. Permitete sentir lo que sientes.', duration:120, reflection:'Observa tu visión suave.', phrase:'Mira con calma.'},
+    {title:'Día 5 – Agradecer', text:'Escribe algo que agradeces hoy.', duration:60, reflection:'Agradece lo que tienes.', phrase:'Gracias.'},
+    {title:'Día 6 – Soltar', text:'Notá un pensamiento inútil y suéltalo al exhalar.', duration:120, reflection:'Deja ir a los pensamientos inútiles.', phrase:'Suelta.'},
+    {title:'Día 7 – Presencia en acción', text:'Haz una tarea cotidiana con atención plena.', duration:120, reflection:'Practica presencia en acción.', phrase:'Presencia.'},
   ];
   let progress = JSON.parse(localStorage.getItem('desafio-progress') || '[]');
 
@@ -18,7 +18,7 @@
   function renderHome() {
     let html = '<div class="screen home active">' +
       '<h1>Desafío de Presencia – 7 días</h1>' +
-      '<p>Un juego de mindfulness para cultivar tu presencia.</p>' +
+      '<p>Un Juego Mindfulness para cultivar tu presencia.</p>' +
       '<div class="logo"><img src="public/logo-escuela-sati.png" alt="Escuela Sati"/></div>' +
       '<button id="start">Comenzar</button>' +
       '</div>';
